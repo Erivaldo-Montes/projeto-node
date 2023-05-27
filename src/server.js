@@ -14,10 +14,10 @@ const server = http.createServer((req, res) => {
       id: 1,
       name: "jhon doe",
     });
-    return res.end("criar");
+    return res.writeHead(201).end("criar");
   }
 
-  return res.end("hello word!!");
+  return res.writeHead(404).end();
 });
 
 server.listen(3333);
