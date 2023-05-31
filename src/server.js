@@ -1,20 +1,18 @@
 import http from "node:http";
 
-const users = [];
-const server = http.createServer((req, res) => {
-  const { method, url } = req;
-  if (method === "GET" && url === "/users") {
-    return res
-      .setHeader("Content-type", "application/json")
-      .end(JSON.stringify(users));
-  }
+import { json } from "./middlewares/json.js";
+import { routes } from "./routes.js";
 
-  if (method === "POST" && url === "/users") {
-    users.push({
-      id: 1,
-      name: "jhon doe",
-    });
-    return res.writeHead(201).end("criar");
+const server = http.createServer(async (req, res) => {
+  const { method, url } = req;
+
+  await json(req, res);
+  const route = routes.find((route) => {
+    return route.method === method && route.path === url;
+  });
+
+  if (route) {
+    return route.handler(req, res);
   }
 
   return res.writeHead(404).end();
